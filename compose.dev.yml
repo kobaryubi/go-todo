@@ -7,3 +7,9 @@ services:
       - 8080:8080
     volumes:
       - ./:/usr/src/app
+  db:
+    image: postgres:16.0
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5432:5432
