@@ -17,7 +17,7 @@ type Resolver struct{
 func New() Config {
 	conn, err := pgx.Connect(
 		context.Background(),
-		"postgres://postgres:example@localhost:5432/postgres",
+		"postgres://postgres:example@db:5432/postgres",
 	)
 	if err != nil {
 		os.Exit(1)
