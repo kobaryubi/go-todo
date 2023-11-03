@@ -5,7 +5,6 @@ import (
 	"os"
 	"github.com/jackc/pgx/v5"
 ) 
-// 	"fmt"
 
 // This file will not be regenerated automatically.
 //
