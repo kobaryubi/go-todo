@@ -13,7 +13,7 @@ import (
 
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	rows, err := r.conn.Query(context.Background(), "SELECT id FROM todos")
+	rows, err := r.pool.Query(context.Background(), "SELECT id FROM todos")
 	if err != nil {
 		os.Exit(1)
 	}
