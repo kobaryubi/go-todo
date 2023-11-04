@@ -6,14 +6,20 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/kobaryubi/go-todo/graph/model"
 )
 
+// CreateTodo is the resolver for the createTodo field.
+func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput) (*model.Todo, error) {
+	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+}
+
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	rows, err := r.pool.Query(context.Background(), "SELECT id FROM todos")
+	rows, err := r.pool.Query(context.Background(), "SELECT id, title FROM todos")
 	if err != nil {
 		os.Exit(1)
 	}
@@ -24,7 +30,7 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 
 	for rows.Next() {
 		var todo *model.Todo
-		err := rows.Scan(&todo.ID)
+		err := rows.Scan(&todo.ID, &todo.Title)
 		if err != nil {
 			continue
 		}
@@ -35,11 +41,15 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	if rows.Err() != nil {
 		os.Exit(1)
 	}
-	
+
 	return todos, nil
 }
+
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

@@ -1,12 +1,15 @@
 type Todo {
   id: ID!
+  title: String!
 }
 
 type Query {
   todos: [Todo!]!
 }
 
-input TodoInput {}
+input TodoInput {
+  title: String!
+}
 
 type Mutation {
   createTodo(input: TodoInput!): Todo!
