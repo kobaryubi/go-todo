@@ -1,13 +1,13 @@
 package main
 
 import (
-	"os"
-	"net/http"
 	"context"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/kobaryubi/go-todo/graph"
+	"net/http"
+	"os"
 )
 
 func main() {

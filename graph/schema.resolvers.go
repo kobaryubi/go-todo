@@ -13,14 +13,23 @@ import (
 
 // CreateTodo is the resolver for the createTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput) (*model.Todo, error) {
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		os.Exit(1)
+	}
+	defer tx.Rollback(ctx)
+
 	var todo model.Todo
-	
-	err := r.pool.QueryRow(
+
+	if err := r.pool.QueryRow(
 		ctx,
 		"INSERT INTO todos (title) VALUES ($1) RETURNING id, title",
 		input.Title,
-	).Scan(&todo.ID, &todo.Title)
-	if err != nil {
+	).Scan(&todo.ID, &todo.Title); err != nil {
+		os.Exit(1)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
 		os.Exit(1)
 	}
 
