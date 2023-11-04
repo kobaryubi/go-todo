@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/kobaryubi/go-todo/graph/model"
@@ -14,12 +13,23 @@ import (
 
 // CreateTodo is the resolver for the createTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+	var todo model.Todo
+	
+	err := r.pool.QueryRow(
+		ctx,
+		"INSERT INTO todos (title) VALUES ($1) RETURNING id, title",
+		input.Title,
+	).Scan(&todo.ID, &todo.Title)
+	if err != nil {
+		os.Exit(1)
+	}
+
+	return &todo, nil
 }
 
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	rows, err := r.pool.Query(context.Background(), "SELECT id, title FROM todos")
+	rows, err := r.pool.Query(ctx, "SELECT id, title FROM todos")
 	if err != nil {
 		os.Exit(1)
 	}
@@ -29,13 +39,13 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	var todos []*model.Todo
 
 	for rows.Next() {
-		var todo *model.Todo
+		var todo model.Todo
 		err := rows.Scan(&todo.ID, &todo.Title)
 		if err != nil {
 			continue
 		}
 
-		todos = append(todos, todo)
+		todos = append(todos, &todo)
 	}
 
 	if rows.Err() != nil {
