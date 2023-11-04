@@ -6,13 +6,37 @@ package graph
 
 import (
 	"context"
+	"os"
 
 	"github.com/kobaryubi/go-todo/graph/model"
 )
 
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return make([]*model.Todo, 0), nil
+	rows, err := r.conn.Query(context.Background(), "SELECT id FROM todos")
+	if err != nil {
+		os.Exit(1)
+	}
+
+	defer rows.Close()
+
+	var todos []*model.Todo
+
+	for rows.Next() {
+		var todo *model.Todo
+		err := rows.Scan(&todo.ID)
+		if err != nil {
+			continue
+		}
+
+		todos = append(todos, todo)
+	}
+
+	if rows.Err() != nil {
+		os.Exit(1)
+	}
+	
+	return todos, nil
 }
 
 // Query returns QueryResolver implementation.
