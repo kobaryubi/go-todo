@@ -3,5 +3,10 @@
 package model
 
 type Todo struct {
-	ID string `json:"id"`
+	ID    string `json:"id"`
+	Title string `json:"title"`
+}
+
+type TodoInput struct {
+	Title string `json:"title"`
 }
