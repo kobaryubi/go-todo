@@ -48,7 +48,6 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 		os.Exit(1)
 	}
 
-
 	return &model.User{ID: "id", Name: "name"}, nil
 }
 
