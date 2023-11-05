@@ -38,7 +38,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput
 
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	rows, err := r.pool.Query(ctx, "SELECT id, title FROM todos")
+	rows, err := r.pool.Query(ctx, "SELECT id, title, done FROM todos")
 	if err != nil {
 		os.Exit(1)
 	}
@@ -49,7 +49,7 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 
 	for rows.Next() {
 		var todo model.Todo
-		err := rows.Scan(&todo.ID, &todo.Title)
+		err := rows.Scan(&todo.ID, &todo.Title, &todo.Done)
 		if err != nil {
 			continue
 		}
