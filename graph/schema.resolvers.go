@@ -36,6 +36,21 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.TodoInput
 	return &todo, nil
 }
 
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		os.Exit(1)
+	}
+	defer tx.Rollback(ctx)
+
+	if err := tx.Commit(ctx); err != nil {
+		os.Exit(1)
+	}
+
+	return &model.User{ID: "id", Name: "name"}, nil
+}
+
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	rows, err := r.pool.Query(ctx, "SELECT id, title, done FROM todos")

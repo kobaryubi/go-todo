@@ -4,6 +4,11 @@ type Todo {
   done: Boolean!
 }
 
+type User {
+  id: ID!
+  name: String!
+}
+
 type Query {
   todos: [Todo!]!
 }
@@ -12,6 +17,12 @@ input TodoInput {
   title: String!
 }
 
+input UserInput {
+  name: String!
+  password: String!
+}
+
 type Mutation {
   createTodo(input: TodoInput!): Todo!
+  createUser(input: UserInput!): User!
 }
