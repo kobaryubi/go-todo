@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/kobaryubi/go-todo/graph/model"
@@ -66,6 +67,11 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 	}
 
 	return &user, nil
+}
+
+// Login is the resolver for the login field.
+func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (*model.AuthPayload, error) {
+	panic(fmt.Errorf("not implemented: Login - login"))
 }
 
 // Todos is the resolver for the todos field.
