@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/kobaryubi/go-todo/graph/model"
+	"github.com/kobaryubi/go-todo/internal/users"
 )
 
 // CreateTodo is the resolver for the createTodo field.
@@ -44,11 +45,27 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 	}
 	defer tx.Rollback(ctx)
 
+	hashedPassword, err := users.HashPassword(input.Password)
+	if err != nil {
+		os.Exit(1)
+	}
+
+	var user model.User
+
+	if err := r.pool.QueryRow(
+		ctx,
+		"INSERT INTO users (name, password) VALUES ($1, $2) RETURNING id, name",
+		input.Name,
+		hashedPassword,
+	).Scan(&user.ID, &user.Name); err != nil {
+		os.Exit(1)
+	}
+
 	if err := tx.Commit(ctx); err != nil {
 		os.Exit(1)
 	}
 
-	return &model.User{ID: "id", Name: "name"}, nil
+	return &user, nil
 }
 
 // Todos is the resolver for the todos field.
