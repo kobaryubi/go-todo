@@ -2,6 +2,16 @@
 
 package model
 
+type AuthPayload struct {
+	Token string `json:"token"`
+	User  *User  `json:"user"`
+}
+
+type LoginInput struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
 type Todo struct {
 	ID    string `json:"id"`
 	Title string `json:"title"`

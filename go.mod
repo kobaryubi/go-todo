@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.39
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/vektah/gqlparser/v2 v2.5.10
+	golang.org/x/crypto v0.9.0
 )
 
 require (
@@ -24,7 +25,6 @@ require (
 	github.com/sosodev/duration v1.1.0 // indirect
 	github.com/urfave/cli/v2 v2.25.5 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
-	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
