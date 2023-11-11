@@ -73,7 +73,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (*model.AuthPayload, error) {
 	var user model.User
 	var hashedPassword string
-	if err := r.pool.QueryRow(ctx, "SELECT id, name, password FROM users WHERE name = $1").Scan(&user.ID, &user.Name, &hashedPassword); err != nil {
+	if err := r.pool.QueryRow(ctx, "SELECT id, name, password FROM users WHERE name = $1", input.Name).Scan(&user.ID, &user.Name, &hashedPassword); err != nil {
 		os.Exit(1)
 	}
 
