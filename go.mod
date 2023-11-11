@@ -4,6 +4,7 @@ go 1.21.1
 
 require (
 	github.com/99designs/gqlgen v0.17.39
+	github.com/golang-jwt/jwt/v5 v5.1.0
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/vektah/gqlparser/v2 v2.5.10
 	golang.org/x/crypto v0.9.0

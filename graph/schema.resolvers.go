@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/kobaryubi/go-todo/graph/model"
+	"github.com/kobaryubi/go-todo/internal/pkg/jwt"
 	"github.com/kobaryubi/go-todo/internal/users"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -71,8 +72,10 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (*model.AuthPayload, error) {
-	var user model.User
-	var hashedPassword string
+	var (
+		user           model.User
+		hashedPassword string
+	)
 	if err := r.pool.QueryRow(ctx, "SELECT id, name, password FROM users WHERE name = $1", input.Name).Scan(&user.ID, &user.Name, &hashedPassword); err != nil {
 		os.Exit(1)
 	}
@@ -81,8 +84,13 @@ func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (*
 		os.Exit(1)
 	}
 
+	token, err := jwt.CreateToken(user.Name)
+	if err != nil {
+		os.Exit(1)
+	}
+
 	return &model.AuthPayload{
-		Token: "token",
+		Token: token,
 		User:  &user,
 	}, nil
 }
