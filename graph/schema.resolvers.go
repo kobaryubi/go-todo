@@ -10,6 +10,7 @@ import (
 
 	"github.com/kobaryubi/go-todo/graph/model"
 	"github.com/kobaryubi/go-todo/internal/users"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // CreateTodo is the resolver for the createTodo field.
@@ -70,12 +71,19 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (*model.AuthPayload, error) {
+	var user model.User
+	var hashedPassword string
+	if err := r.pool.QueryRow(ctx, "SELECT id, name, password FROM users WHERE name = $1", input.Name).Scan(&user.ID, &user.Name, &hashedPassword); err != nil {
+		os.Exit(1)
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(input.Password)); err != nil {
+		os.Exit(1)
+	}
+
 	return &model.AuthPayload{
 		Token: "token",
-		User: &model.User{
-			ID:   "id",
-			Name: "name",
-		},
+		User:  &user,
 	}, nil
 }
 
