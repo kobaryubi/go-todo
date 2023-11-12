@@ -6,7 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// MUST: keyの形式を確認する
+// TODO: 秘密鍵を置き換える
 const SecretKey = "secret"
 
 func CreateToken(name string) (string, error) {
