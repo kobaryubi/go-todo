@@ -6,14 +6,12 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
-
-// TODO: 秘密鍵を置き換える
-const SecretKey = "secret"
 
 func CreateToken(name string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
@@ -21,7 +19,12 @@ func CreateToken(name string) (string, error) {
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	})
 
-	tokenString, err := token.SignedString(SecretKey)
+	privateKey, err := GetTokenKey()
+	if err != nil {
+		return "", err
+	}
+
+	tokenString, err := token.SignedString(privateKey)
 	if err != nil {
 		return "", err
 	}
@@ -57,4 +60,23 @@ func GenerateTokenKey() error {
 	}
 
 	return nil
+}
+
+func GetTokenKey() (*ecdsa.PrivateKey, error) {
+	bytes, err := os.ReadFile("es256_private_key.pem")
+	if err != nil {
+		return nil, err
+	}
+
+	block, _ := pem.Decode(bytes)
+	if block == nil || block.Type != "PRIVATE KEY" {
+		return nil, errors.New("")
+	}
+
+	privateKey, err := x509.ParseECPrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return privateKey, nil
 }
